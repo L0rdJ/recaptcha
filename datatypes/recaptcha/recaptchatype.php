@@ -38,6 +38,13 @@ class recaptchaType extends eZDataType
 
     protected static function validateReCAPTCHA(eZHTTPTool $http, eZContentObjectAttribute $attribute)
     {
+        // No captcha validation is requried for admin siteaccess
+        $ini               = eZINI::instance();
+        $additionalDesigns = $ini->variable('DesignSettings', 'AdditionalSiteDesignList');
+        if (in_array('admin', $additionalDesigns)) {
+            return eZInputValidator::STATE_ACCEPTED;
+        }
+
         if ((bool) $attribute->attribute('is_required') === false) {
             return eZInputValidator::STATE_ACCEPTED;
         }
